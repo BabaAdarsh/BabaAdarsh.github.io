@@ -1,0 +1,20 @@
+title: Adarsh Kumar
+description: >-
+  Computational and cognitive neuroscientist studying how humans predict,
+  learn, and control movement. Postdoctoral Fellow, Queen's University.
+url: "https://babaadarsh.github.io"
+baseurl: ""
+author:
+  name: Adarsh Kumar
+  email: adarsh.kumar@queensu.ca
+
+# Social / academic links — appear automatically in the footer
+scholar_url: "https://scholar.google.com/citations?user=WjC6WP0AAAAJ&hl=en"
+orcid_url: "https://orcid.org/0000-0002-6485-7869"
+github_url: "https://github.com/BabaAdarsh"
+linkedin_url: "https://www.linkedin.com/in/adarsh-kumar-35a7a32a7/"
+
+markdown: kramdown
+permalink: /blog/:year/:title/
+exclude:
+  - README.md

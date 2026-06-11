@@ -1,0 +1,18 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+---
+
+<h1>Blog</h1>
+<p class="muted">Weekly notes on computational neuroscience, motor learning, behavioural modelling, and the science of movement.</p>
+
+<ul class="post-list">
+  {% for post in site.posts %}
+  <li>
+    <a class="post-title" href="{{ post.url | relative_url }}">{{ post.title }}</a><br>
+    <span class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</span>
+    <p>{{ post.excerpt | strip_html | truncate: 200 }}</p>
+  </li>
+  {% endfor %}
+</ul>
