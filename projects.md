@@ -46,12 +46,4 @@ Together they form one pipeline: **collect** behaviour → **model** learning �
 <img src="/assets/img/projects/task-trained-rnn.png" alt="RNN training, reaches, and emergent rotational dynamics">
 </div>
 
-<h2>Research program</h2>
-
-<div class="card">
-<h3><a href="https://github.com/BabaAdarsh/motornet-experiments">motornet-experiments</a> — Embodied Control Under Uncertainty</h3>
-<p>A pre-registered program of three novel experiments in <a href="https://elifesciences.org/articles/88591">MotorNet</a> (Codol et al., 2024): emergent impedance/co-contraction under uncertainty, reliability-weighted multisensory feedback control, and competing memories &amp; contextual inference in an embodied controller. Detailed designs, runnable training scripts, and a tested analysis layer. <em>Python · 13 tests.</em></p>
-<img src="/assets/img/projects/motornet-experiments.png" alt="MotorNet experiment program schematic">
-</div>
-
 <p style="margin-top:1.5rem"><a href="https://github.com/BabaAdarsh">See all repositories on GitHub →</a></p>
