@@ -135,6 +135,11 @@ th { background: var(--bg-soft); }
 .post figure img { width: 100%; border: 1px solid var(--rule); border-radius: 8px; }
 .post figcaption { font-size: 0.86rem; color: var(--muted); margin-top: 0.4rem; }
 
+.refs { font-size: 0.86rem; color: var(--muted); line-height: 1.5; }
+.refs ol { padding-left: 1.4rem; }
+.refs li { margin-bottom: 0.45rem; }
+.refs a { word-break: break-word; }
+
 .nav-links a.active { color: var(--accent); }
 
 @media (max-width: 560px) {

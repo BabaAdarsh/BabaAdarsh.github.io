@@ -16,7 +16,12 @@ It is also, we now think, the wrong metaphor.
 
 ## The keyboard era
 
-The keyboard idea has a respectable origin. In the 1980s, Apostolos Georgopoulos and colleagues recorded from motor cortex while monkeys reached in different directions and found that many neurons had a preferred direction: a cell might fire hardest for reaches up and to the right, less for other directions, in a smooth tuning curve. Add up the votes of the whole population, each cell pointing toward its preferred direction and shouting in proportion to its firing, and the sum, the "population vector," pointed almost exactly the way the arm was about to go.
+The keyboard idea has a respectable origin. In the early 1980s, Apostolos Georgopoulos and colleagues recorded from motor cortex while monkeys reached in different directions and found that many neurons had a preferred direction: a cell might fire hardest for reaches up and to the right, less for other directions, in a smooth cosine-shaped tuning curve (Georgopoulos et al., 1982). Add up the votes of the whole population, each cell pointing toward its preferred direction and shouting in proportion to its firing, and the sum, the "population vector," pointed almost exactly the way the arm was about to go (Georgopoulos, Schwartz and Kettner, 1986).
+
+<figure>
+<img src="/assets/img/blog/georgopoulos.png" alt="Cosine directional tuning and the population vector">
+<figcaption>Left: each neuron fires according to a cosine tuning curve, peaking at its preferred direction. Right: for a movement at 50°, every neuron casts a vote toward its preferred direction scaled by its firing; the sum (the population vector, teal) lands almost exactly on the true movement direction (gold). Computed directly from the cosine tuning equations.</figcaption>
+</figure>
 
 That was a genuinely beautiful result. The population seemed to literally point where the hand would move. It made motor cortex look like a readout panel, a place where the intended direction of movement is written down in the language of firing rates.
 
@@ -26,13 +31,13 @@ But as people looked closer at what individual neurons do during a real reach, t
 
 The breakthrough came from changing the question. Instead of asking what each neuron represents, a group around Krishna Shenoy and Mark Churchland at Stanford asked how the whole population moves as a unit over time. Not "what does this cell stand for," but "where is the population headed next, given where it is now."
 
-When you ask it that way, the apparent gibberish snaps into order. Take the activity of hundreds of motor cortex neurons during reaching, summarize the dominant patterns, and the population state does not wander randomly. It rotates. Around the moment movement begins, the population traces smooth, lawful rotations, the same way the hands of a clock sweep, or a wheel turns. Different reaches share the same rotational machinery; they mostly differ in where on the wheel they start.
+When you ask it that way, the apparent gibberish snaps into order. Take the activity of hundreds of motor cortex neurons during reaching, summarize the dominant patterns, and the population state does not wander randomly. It rotates. Around the moment movement begins, the population traces smooth, lawful rotations, the same way the hands of a clock sweep, or a wheel turns (Churchland et al., 2012). Different reaches share the same rotational machinery; they mostly differ in where on the wheel they start.
 
 That single observation reframes everything. A system whose state rotates in a regular way is not a lookup table. It is a dynamical system: something whose next state follows from its current state by a fixed rule, the way a swinging pendulum or a running engine evolves. Motor cortex, on this view, is less a panel where the command is written and more an engine that, once set spinning, generates the rich time-varying pattern of muscle activity a movement needs.
 
 <div class="deeper">
 <span class="deeper-label">Going deeper</span>
-<p>The rotations are usually revealed with jPCA, which fits the population's flow with a linear dynamical system constrained to be purely rotational (a skew-symmetric transition matrix, whose eigenvalues are imaginary). The fact that a low-dimensional, rotation-dominated linear model captures so much of the peri-movement variance is the actual claim. The interpretation, advanced most forcefully by Churchland, Shenoy and colleagues (Nature, 2012), is that motor cortex acts as a pattern generator whose output drives muscles, and that the much-debated "preparatory" activity sets the initial condition from which those dynamics unfold.</p>
+<p>The rotations are usually revealed with jPCA, which fits the population's flow with a linear dynamical system constrained to be purely rotational (a skew-symmetric transition matrix, whose eigenvalues are imaginary). The fact that a low-dimensional, rotation-dominated linear model captures so much of the peri-movement variance is the actual claim. The interpretation, advanced most forcefully by Churchland, Shenoy and colleagues (2012), is that motor cortex acts as a pattern generator whose output drives muscles, and that the much-debated "preparatory" activity sets the initial condition from which those dynamics unfold (Churchland et al., 2010; Shenoy, Sahani and Churchland, 2013).</p>
 </div>
 
 ## Setting versus running
@@ -47,7 +52,7 @@ This is a deep shift in what we think the cortex is doing. It is not narrating t
 
 Here is the part I find genuinely striking, and it is where a small piece of code earns its place in the story rather than being the point of it.
 
-Take an artificial network, a few dozen interconnected units with no built-in knowledge of brains, and train it to do one thing: produce the muscle-like outputs for reaching in different directions. Never tell it anything about rotations. Train it only to make good reaches. When you then look inside it and ask the Stanford question, where is the population headed next, you find the same rotations that motor cortex shows.
+Take an artificial network, a few dozen interconnected units with no built-in knowledge of brains, and train it to do one thing: produce the muscle-like outputs for reaching in different directions. Never tell it anything about rotations. Train it only to make good reaches. When you then look inside it and ask the Stanford question, where is the population headed next, you find the same rotations that motor cortex shows (an effect first demonstrated by Sussillo et al., 2015).
 
 <figure>
 <img src="/assets/img/projects/task-trained-rnn.png" alt="A trained network's reaches and its rotational population dynamics">
@@ -71,4 +76,15 @@ The cup of coffee is in your hand now. Your motor cortex did not type out the co
 
 <div class="series-note">
 Next in <b>Mind in Motion</b>: if movement is a wound-up engine, what does it mean to <i>prepare</i> one, and why does getting ready take time? Subscribe via <a href="/feed.xml">RSS</a> to follow along.
+</div>
+
+## References
+
+<div class="refs" markdown="1">
+1. Georgopoulos, A. P., Kalaska, J. F., Caminiti, R., and Massey, J. T. (1982). On the relations between the direction of two-dimensional arm movements and cell discharge in primate motor cortex. *Journal of Neuroscience*, 2(11), 1527–1537.
+2. Georgopoulos, A. P., Schwartz, A. B., and Kettner, R. E. (1986). Neuronal population coding of movement direction. *Science*, 233(4771), 1416–1419.
+3. Churchland, M. M., Cunningham, J. P., Kaufman, M. T., Foster, J. D., Nuyujukian, P., Ryu, S. I., and Shenoy, K. V. (2012). Neural population dynamics during reaching. *Nature*, 487, 51–56.
+4. Churchland, M. M., Cunningham, J. P., Kaufman, M. T., Ryu, S. I., and Shenoy, K. V. (2010). Cortical preparatory activity: representation of movement or first cog in a dynamical machine? *Neuron*, 68(3), 387–400.
+5. Shenoy, K. V., Sahani, M., and Churchland, M. M. (2013). Cortical control of arm movements: a dynamical systems perspective. *Annual Review of Neuroscience*, 36, 337–359.
+6. Sussillo, D., Churchland, M. M., Kaufman, M. T., and Shenoy, K. V. (2015). A neural network that finds a naturalistic solution for the production of muscle activity. *Nature Neuroscience*, 18, 1025–1033.
 </div>
