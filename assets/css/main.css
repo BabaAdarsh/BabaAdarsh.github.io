@@ -113,6 +113,28 @@ th { background: var(--bg-soft); }
 .reading-item { margin-bottom: 1.1rem; }
 .reading-item .why { color: var(--muted); font-size: 0.95rem; }
 
+/* "Going deeper" asides: an optional layer for advanced readers. */
+.deeper {
+  border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+  background: var(--bg-soft); border-radius: 8px;
+  padding: 0.85rem 1.1rem; margin: 1.4rem 0; font-size: 0.95rem;
+}
+.deeper .deeper-label {
+  display: inline-block; font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+.deeper p:last-child { margin-bottom: 0; }
+
+.series-note {
+  font-size: 0.9rem; color: var(--muted); background: var(--bg-soft);
+  border-radius: 8px; padding: 0.6rem 0.9rem; margin-bottom: 1.5rem;
+}
+
+.post figure { margin: 1.5rem 0; }
+.post figure img { width: 100%; border: 1px solid var(--rule); border-radius: 8px; }
+.post figcaption { font-size: 0.86rem; color: var(--muted); margin-top: 0.4rem; }
+
 .nav-links a.active { color: var(--accent); }
 
 @media (max-width: 560px) {

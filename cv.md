@@ -6,7 +6,7 @@ permalink: /cv/
 
 # Curriculum Vitae
 
-<p class="muted">A print-ready version is available <a href="/assets/cv/Adarsh_Kumar_CV.html">here</a> (open and use your browser's "Save as PDF").</p>
+<p class="muted">Download as <a href="/assets/cv/Adarsh_Kumar_CV.pdf">PDF</a>, or view the <a href="/assets/cv/Adarsh_Kumar_CV.html">web version</a>.</p>
 
 ## Appointments
 
