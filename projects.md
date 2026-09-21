@@ -6,19 +6,19 @@ permalink: /projects/
 
 # Code &amp; Projects
 
-Open-source toolboxes spanning my research program — from behavioural experiments and computational models to neural decoding and population dynamics. Everything is tested, documented, MIT-licensed, and on <a href="https://github.com/BabaAdarsh">GitHub</a>.
+Open-source toolboxes spanning my research program, from behavioural experiments and computational models to neural decoding and population dynamics. Everything is tested, documented, MIT-licensed, and on <a href="https://github.com/BabaAdarsh">GitHub</a>.
 
 Together they form one pipeline: **collect** behaviour → **model** learning → **measure** physiology and movement quality → **decode** neural activity → **model** neural dynamics.
 
 <div class="card">
 <h3><a href="https://github.com/BabaAdarsh/reach-task">reach-task</a></h3>
-<p>A dependency-free, browser-based framework for sensorimotor adaptation experiments — visuomotor rotation, task-irrelevant error-clamp (implicit adaptation), target jump, and mirror reversal. Runs free on GitHub Pages and scales to web/tablet data collection. <em>JavaScript · 22 tests.</em> <a href="https://babaadarsh.github.io/reach-task/">Live demo →</a></p>
+<p>A dependency-free, browser-based framework for sensorimotor adaptation experiments, visuomotor rotation, task-irrelevant error-clamp (implicit adaptation), target jump, and mirror reversal. Runs free on GitHub Pages and scales to web/tablet data collection. <em>JavaScript · 22 tests.</em> <a href="https://babaadarsh.github.io/reach-task/">Live demo →</a></p>
 <img src="/assets/img/projects/reach-task.png" alt="reach-task: adaptation to a visuomotor rotation">
 </div>
 
 <div class="card">
 <h3><a href="https://github.com/BabaAdarsh/motor-adaptation-models">motor-adaptation-models</a></h3>
-<p>Canonical state-space models of sensorimotor learning — single-rate, dual-rate (Smith et al. 2006), and memory-of-errors (Herzfeld et al. 2014) — with fitting and AIC model comparison. Reproduces savings, interference, and spontaneous recovery. <em>Python · 12 tests.</em></p>
+<p>Canonical state-space models of sensorimotor learning, single-rate, dual-rate (Smith et al. 2006), and memory-of-errors (Herzfeld et al. 2014), with fitting and AIC model comparison. Reproduces savings, interference, and spontaneous recovery. <em>Python · 12 tests.</em></p>
 <img src="/assets/img/projects/motor-adaptation-models.png" alt="Spontaneous recovery from the dual-rate model">
 </div>
 
@@ -30,13 +30,13 @@ Together they form one pipeline: **collect** behaviour → **model** learning �
 
 <div class="card">
 <h3><a href="https://github.com/BabaAdarsh/kinematics-features">kinematics-features</a></h3>
-<p>Interpretable movement biomarkers from reach trajectories — SPARC smoothness, submovements, straightness, and trial-to-trial variability. The markers that distinguish healthy from impaired movement. <em>Python · 12 tests.</em></p>
+<p>Interpretable movement biomarkers from reach trajectories, SPARC smoothness, submovements, straightness, and trial-to-trial variability. The markers that distinguish healthy from impaired movement. <em>Python · 12 tests.</em></p>
 <img src="/assets/img/projects/kinematics-features.png" alt="Smooth vs fragmented reach features">
 </div>
 
 <div class="card">
 <h3><a href="https://github.com/BabaAdarsh/neural-decoding-kit">neural-decoding-kit</a></h3>
-<p>Decode arm movement from motor-cortical population activity — the core problem of intracortical BCIs. Population-vector, Wiener, and Kalman (Wu et al. 2006) decoders, all from scratch in NumPy. <em>Python · 6 tests.</em></p>
+<p>Decode arm movement from motor-cortical population activity, the core problem of intracortical BCIs. Population-vector, Wiener, and Kalman (Wu et al. 2006) decoders, all from scratch in NumPy. <em>Python · 6 tests.</em></p>
 <img src="/assets/img/projects/neural-decoding-kit.png" alt="Decoded vs true reaches and decoder accuracy">
 </div>
 

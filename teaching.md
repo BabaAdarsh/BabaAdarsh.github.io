@@ -12,11 +12,11 @@ I teach quantitative behavioural science the way I practice it: students learn c
 
 ## Invited teaching
 
-- **"Introduction to Motor Learning"** — guest lecture, Faculty of Kinesiology and Physical Education, University of Toronto (undergraduate course KPE160H)
+- **"Introduction to Motor Learning"**, guest lecture, Faculty of Kinesiology and Physical Education, University of Toronto (undergraduate course KPE160H)
 
 ## Teaching assistantships
 
-IIT Gandhinagar, courses of 50–100 students — led tutorials, developed quizzes, exams and assignments, coordinated grading and laboratory activities:
+IIT Gandhinagar, courses of 50-100 students, led tutorials, developed quizzes, exams and assignments, coordinated grading and laboratory activities:
 
 Advanced Probability Theory · Control Systems · Mechanics of Deformable Bodies · Modern Control Theory (twice) · Mechanical Lab · Fundamental Neuroscience · Industrial Engineering and Operations Research
 
@@ -26,5 +26,5 @@ Computational neuroscience · cognitive and behavioural neuroscience · behaviou
 
 ## Mentorship
 
-- Mentored Master's and PhD trainees at IIT Gandhinagar in motor learning and sensorimotor control — guiding experimental design, data collection, analysis, and manuscript development. Several mentees became co-authors on published papers and preprints.
+- Mentored Master's and PhD trainees at IIT Gandhinagar in motor learning and sensorimotor control, guiding experimental design, data collection, analysis, and manuscript development. Several mentees became co-authors on published papers and preprints.
 - At Queen's, contributed to training summer interns and graduate students in KINARM-based experiments, EMG and motor-unit studies, and movement-related neural data analysis.

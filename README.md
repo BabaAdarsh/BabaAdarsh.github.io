@@ -1,6 +1,6 @@
 # babaadarsh.github.io
 
-Academic website of Adarsh Kumar — Jekyll, hosted free on GitHub Pages.
+Academic website of Adarsh Kumar, Jekyll, hosted free on GitHub Pages.
 
 ## Publish (one-time, ~5 min)
 

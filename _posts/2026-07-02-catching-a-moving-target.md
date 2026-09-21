@@ -2,7 +2,7 @@
 layout: post
 title: "The smart reflex: how your arm fixes a reach already in motion"
 tags: [feedback control, motor cortex, mind in motion]
-published: false
+published: true
 ---
 
 <!-- Scheduled for 2026-07-02. Set published: true (or remove the line) and push to make live. -->
@@ -60,10 +60,10 @@ Next in <b>Mind in Motion</b>: all of this fast correction depends on knowing wh
 ## References
 
 <div class="refs" markdown="1">
-1. Todorov, E., and Jordan, M. I. (2002). Optimal feedback control as a theory of motor coordination. *Nature Neuroscience*, 5(11), 1226–1235.
-2. Scott, S. H. (2004). Optimal feedback control and the neural basis of volitional motor control. *Nature Reviews Neuroscience*, 5(7), 532–546.
-3. Pruszynski, J. A., Kurtzer, I., Nashed, J. Y., Omrani, M., Brouwer, B., and Scott, S. H. (2011). Primary motor cortex underlies multi-joint integration for fast feedback control. *Nature*, 478(7369), 387–390.
-4. Pruszynski, J. A., and Scott, S. H. (2012). Optimal feedback control and the long-latency stretch response. *Experimental Brain Research*, 218(3), 341–359.
-5. Day, B. L., and Lyon, I. N. (2000). Voluntary modification of automatic arm movements evoked by motion of a visual target. *Experimental Brain Research*, 130(2), 159–168.
-6. Scott, S. H. (2016). A functional taxonomy of bottom-up sensory feedback processing for motor actions. *Trends in Neurosciences*, 39(8), 512–526.
+1. Todorov, E., and Jordan, M. I. (2002). Optimal feedback control as a theory of motor coordination. *Nature Neuroscience*, 5(11), 1226-1235.
+2. Scott, S. H. (2004). Optimal feedback control and the neural basis of volitional motor control. *Nature Reviews Neuroscience*, 5(7), 532-546.
+3. Pruszynski, J. A., Kurtzer, I., Nashed, J. Y., Omrani, M., Brouwer, B., and Scott, S. H. (2011). Primary motor cortex underlies multi-joint integration for fast feedback control. *Nature*, 478(7369), 387-390.
+4. Pruszynski, J. A., and Scott, S. H. (2012). Optimal feedback control and the long-latency stretch response. *Experimental Brain Research*, 218(3), 341-359.
+5. Day, B. L., and Lyon, I. N. (2000). Voluntary modification of automatic arm movements evoked by motion of a visual target. *Experimental Brain Research*, 130(2), 159-168.
+6. Scott, S. H. (2016). A functional taxonomy of bottom-up sensory feedback processing for motor actions. *Trends in Neurosciences*, 39(8), 512-526.
 </div>

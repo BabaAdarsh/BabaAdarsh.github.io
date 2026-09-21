@@ -12,15 +12,15 @@ permalink: /publications/
 
 <div class="pub">
 <span class="title">Contextual cues and transition statistics drive expression of competing motor memories</span><br>
-<span class="authors"><span class="me">Kumar, A.</span>*, Deva Kumar, A.*, Sannamath, S., &amp; Kumar, N.</span><br>
-<span class="venue">iScience</span> (in press)
-<span class="links"><a href="https://www.biorxiv.org/content/10.1101/2025.09.08.674705v1">preprint</a></span>
+<span class="authors"><span class="me">Kumar, A.</span>*, Deva Kumar, A.*, Sannamath, S., &amp; Kumar, N. (2026)</span><br>
+<span class="venue">iScience</span>, 29(7)
+<span class="links"><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC13355677/">article</a> · <a href="https://www.biorxiv.org/content/10.1101/2025.09.08.674705v1">preprint</a></span>
 </div>
 
 <div class="pub">
 <span class="title">Interaction between model-based and model-free mechanisms in motor learning</span><br>
 <span class="authors">Kumar, A. D.*, <span class="me">Kumar, A.</span>*, &amp; Kumar, N. (2025)</span><br>
-<span class="venue">Journal of Neurophysiology</span>, 134(5), 1714–1726
+<span class="venue">Journal of Neurophysiology</span>, 134(5), 1714-1726
 <span class="links"><a href="https://doi.org/10.1152/jn.00219.2025">doi</a></span>
 </div>
 
@@ -48,14 +48,14 @@ permalink: /publications/
 <div class="pub">
 <span class="title">Mechanistic determinants of effector-independent motor memory encoding</span><br>
 <span class="authors"><span class="me">Kumar, A.</span>, Panthi, G., Divakar, R., &amp; Mutha, P. K. (2020)</span><br>
-<span class="venue">Proceedings of the National Academy of Sciences</span>, 117(29), 17338–17347
+<span class="venue">Proceedings of the National Academy of Sciences</span>, 117(29), 17338-17347
 <span class="links"><a href="https://doi.org/10.1073/pnas.2001179117">doi</a></span>
 </div>
 
 <div class="pub">
 <span class="title">Interference between competing motor memories developed through learning with different limbs</span><br>
 <span class="authors">Kumar, N., <span class="me">Kumar, A.</span>, Sonane, B., &amp; Mutha, P. K. (2018)</span><br>
-<span class="venue">Journal of Neurophysiology</span>, 120(3), 1061–1073
+<span class="venue">Journal of Neurophysiology</span>, 120(3), 1061-1073
 <span class="links"><a href="https://doi.org/10.1152/jn.00905.2017">doi</a></span>
 </div>
 

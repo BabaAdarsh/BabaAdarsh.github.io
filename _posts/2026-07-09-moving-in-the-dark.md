@@ -2,7 +2,7 @@
 layout: post
 title: "The sense you forget you have: how the brain feels the body"
 tags: [proprioception, state estimation, mind in motion]
-published: false
+published: true
 ---
 
 <!-- Scheduled for 2026-07-09. Set published: true (or remove the line) and push to make live. -->
@@ -56,9 +56,9 @@ That closes the first arc of <b>Mind in Motion</b>: generation, preparation, cor
 ## References
 
 <div class="refs" markdown="1">
-1. Wolpert, D. M., Ghahramani, Z., and Jordan, M. I. (1995). An internal model for sensorimotor integration. *Science*, 269(5232), 1880–1882.
-2. Sainburg, R. L., Ghilardi, M. F., Poizner, H., and Ghez, C. (1995). Control of limb dynamics in normal subjects and patients without proprioception. *Journal of Neurophysiology*, 73(2), 820–835.
-3. Cole, J. D., and Sedgwick, E. M. (1992). The perceptions of force and of movement in a man without large myelinated sensory afferents below the neck. *Journal of Physiology*, 449, 503–515.
-4. Sober, S. J., and Sabes, P. N. (2005). Flexible strategies for sensory integration during motor planning. *Nature Neuroscience*, 8(4), 490–497.
-5. Ernst, M. O., and Banks, M. S. (2002). Humans integrate visual and haptic information in a statistically optimal fashion. *Nature*, 415(6870), 429–433.
+1. Wolpert, D. M., Ghahramani, Z., and Jordan, M. I. (1995). An internal model for sensorimotor integration. *Science*, 269(5232), 1880-1882.
+2. Sainburg, R. L., Ghilardi, M. F., Poizner, H., and Ghez, C. (1995). Control of limb dynamics in normal subjects and patients without proprioception. *Journal of Neurophysiology*, 73(2), 820-835.
+3. Cole, J. D., and Sedgwick, E. M. (1992). The perceptions of force and of movement in a man without large myelinated sensory afferents below the neck. *Journal of Physiology*, 449, 503-515.
+4. Sober, S. J., and Sabes, P. N. (2005). Flexible strategies for sensory integration during motor planning. *Nature Neuroscience*, 8(4), 490-497.
+5. Ernst, M. O., and Banks, M. S. (2002). Humans integrate visual and haptic information in a statistically optimal fashion. *Nature*, 415(6870), 429-433.
 </div>
