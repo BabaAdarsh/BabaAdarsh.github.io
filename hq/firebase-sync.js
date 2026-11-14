@@ -202,6 +202,12 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
    if(!current){status('signed_out');return}
    status('connecting');
    ['missions','jobs','updates'].forEach(n=>unsubs.push(listen(n)));
+   // An optional server status listener; failure must never prevent the user's
+   // working Firebase mission and journal subscriptions.
+   unsubs.push(onSnapshot(doc(db,'users',current.uid,'syncMeta','current'),sn=>{
+     if(sn.exists())globalThis.HQ_DEBUG?.setBackendHealth?.(sn.data());
+   },err=>console.info('Optional backend health is not yet available:',err.code||'not deployed')));
+
  });
  globalThis.HQ_BRIDGE={signIn,signOut:()=>signOut(auth),saveMission,saveJob,saveUpdate,uploadLocal,enablePush,syncFromGoogleHQ,connectionHealth,configureBackground,backgroundSyncNow,backgroundTestPush,getUser:()=>user,isReady:()=>ready,isConfigured:()=>valid};
  globalThis.HQ_BRIDGE_CONFIGURED=true;
