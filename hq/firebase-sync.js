@@ -36,10 +36,10 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
   })}
  async function saveJob(j){ensure();await setDoc(doc(base('jobs'),j.jobId),{...j,updatedAt:new Date().toISOString(),syncedAt:serverTimestamp()})}
  async function saveUpdate(u){ensure();await setDoc(doc(base('updates'),u.updateId),{...u,syncedAt:serverTimestamp()})}
- async function uploadLocal(data){ensure();if(!confirm('Upload your LOCAL HQ data into your private cloud workspace? Existing matching IDs will be replaced. Use only when you are sure.'))return;
+ async function uploadLocal(data){ensure();if(!confirm('Upload LOCAL HQ records to Firebase? Matching cloud records will be overwritten. Export a backup first. This cannot be automatically undone.'))return;
    const entries=[['missions',data.missions||[],x=>x.id],['jobs',data.jobs||[],x=>x.jobId],['updates',data.updates||[],x=>x.updateId]];
    let n=0;for(const [name,rows,idfn] of entries){for(let i=0;i<rows.length;i+=350){const batch=writeBatch(db);for(const r of rows.slice(i,i+350)){if(!idfn(r))continue;const { _firestoreId,_etag,...safe }=r;batch.set(doc(base(name),idfn(r)),{...safe,syncedAt:serverTimestamp()});n++}await batch.commit()}}
-   notify(`${n} records uploaded to private cloud HQ.`);
+   globalThis.HQ_LOCAL_PENDING=false;notify(`${n} records uploaded to private cloud HQ.`);
  }
  async function enablePush(){ensure();if(!config.vapidKey)throw Error('Add your public VAPID key in firebase-config.js first.');if(!('Notification' in window))throw Error('This browser cannot display push notifications.');
    const p=await Notification.requestPermission();if(p!=='granted')throw Error('Notifications were not allowed.');if(!await isSupported())throw Error('Firebase Messaging is not supported in this browser.');
