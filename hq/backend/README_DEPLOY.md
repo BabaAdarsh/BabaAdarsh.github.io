@@ -21,7 +21,10 @@ git clone https://github.com/BabaAdarsh/BabaAdarsh.github.io.git
 cd BabaAdarsh.github.io/hq/backend
 npm --prefix functions install
 npm --prefix functions test
-firebase deploy --project adarsh-hq-private --only firestore:rules,functions:hq
+# First deploy only the owner-allowlisted rules, then reopen HQ on your phone
+firebase deploy --project adarsh-hq-private --only firestore:rules
+# Only after your signed-in phone still loads its private missions:
+firebase deploy --project adarsh-hq-private --only functions:hq
 ```
 
 The existing repository is public for the separate GitHub Pages personal website; **do not change its visibility impulsively**. A future private HQ source repository plus Firebase Hosting is preferable, but Firebase Hosting still serves publicly retrievable frontend assets; private data is protected by Authentication and security rules. Avoid putting secrets in Git history.
@@ -52,7 +55,9 @@ npm ci   # if package-lock.json present; else npm install
 node --test test/*.test.js
 cd ..
 firebase use adarsh-hq-private
-firebase deploy --only firestore:rules,functions:hq
+firebase deploy --only firestore:rules
+# Verify phone still works, then:
+firebase deploy --only functions:hq
 ```
 
 **Missing in current ChatGPT connection:** administrative Firebase Cloud Functions deployment capability. I can edit public GitHub code and update the existing private Google Sheet, but cannot grant myself Google Cloud IAM, billing, share service-account access, or deploy this backend without the user's authorization/integration. Do not present this package as a running background worker.
