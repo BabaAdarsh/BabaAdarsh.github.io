@@ -12,7 +12,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js')
  ]);
  const {initializeApp}=appMod;
- const {getAuth,GoogleAuthProvider,onAuthStateChanged,signInWithPopup,signInWithRedirect,signOut}=authMod;
+ const {getAuth,GoogleAuthProvider,onAuthStateChanged,signInWithPopup,signOut}=authMod;
  const {getFirestore,collection,doc,onSnapshot,setDoc,runTransaction,writeBatch,serverTimestamp}=dbMod;
  const {getMessaging,isSupported,getToken,onMessage}=msgMod;
  const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
@@ -26,7 +26,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
    globalThis.HQ_DEBUG?.receiveRemote?.(name,list);
    loaded.add(name);if(loaded.size===3){ready=true;status('synced')}
  },err=>{ready=false;status('error');notify('HQ sync error: '+err.message)});
- async function signIn(){if(!valid)throw Error('Firebase is not configured.');try{await signInWithPopup(auth,provider);}catch(e){if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment'].includes(e.code)){await signInWithRedirect(auth,provider)}else throw e}}
+ async function signIn(){if(!valid)throw Error('Firebase is not configured.');const result=await signInWithPopup(auth,provider);return result.user?.email||'signed in';}
  async function saveMission(m,expectedUpdatedAt){ensure();const ref=doc(base('missions'),m.id);return runTransaction(db,async tx=>{
     const snap=await tx.get(ref);const prev=snap.exists()?snap.data():null;
     if(prev&&expectedUpdatedAt!==prev.updatedAt)throw Error('CONFLICT: HQ was changed on another device. Refresh before editing.');
