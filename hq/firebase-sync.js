@@ -76,7 +76,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
    for(let i=0;i<pending.length;i+=350){
      const batch=writeBatch(db);
      for(const row of pending.slice(i,i+350)){
-       batch.set(doc(base(name),row[key]),{...row,hqSource:'google-sheet',syncedAt:serverTimestamp()},{merge:true});
+       batch.set(doc(base(name),row[key]),{...row,hqSource:'google-sheet',syncOrigin:'sheet',syncedAt:serverTimestamp()},{merge:true});
      }
      await batch.commit();
    }
