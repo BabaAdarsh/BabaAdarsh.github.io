@@ -16,7 +16,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
  const {getFirestore,collection,doc,onSnapshot,setDoc,runTransaction,writeBatch,serverTimestamp}=dbMod;
  const {getMessaging,isSupported,getToken,onMessage}=msgMod;
  const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
- let user=null,ready=false,unsubs=[],got=0;
+ let user=null,ready=false,unsubs=[],loaded=new Set();
  const status=(s)=>globalThis.HQ_DEBUG?.setConnection?.(s);
  const notify=(s)=>globalThis.HQ_DEBUG?.notify?.(s);
  const base=(collectionName)=>collection(db,'users',user.uid,collectionName);
@@ -24,7 +24,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
  const listen=(name)=>onSnapshot(base(name),sn=>{
    const list=sn.docs.map(d=>({...d.data(),_firestoreId:d.id}));
    globalThis.HQ_DEBUG?.receiveRemote?.(name,list);
-   got++;if(got>=3){ready=true;status('synced')}
+   loaded.add(name);if(loaded.size===3){ready=true;status('synced')}
  },err=>{ready=false;status('error');notify('HQ sync error: '+err.message)});
  async function signIn(){if(!valid)throw Error('Firebase is not configured.');try{await signInWithPopup(auth,provider);}catch(e){if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment'].includes(e.code)){await signInWithRedirect(auth,provider)}else throw e}}
  async function saveMission(m,expectedUpdatedAt){ensure();const ref=doc(base('missions'),m.id);return runTransaction(db,async tx=>{
@@ -50,7 +50,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
    onMessage(messaging,payload=>{notify(payload?.notification?.title||'New HQ update received')});notify('This device is registered for push. Delivery still requires a configured sender.');
  }
  onAuthStateChanged(auth,current=>{
-   unsubs.forEach(f=>f());unsubs=[];got=0;ready=false;user=current;
+   unsubs.forEach(f=>f());unsubs=[];loaded.clear();ready=false;user=current;
    if(!current){status('signed_out');return}
    status('connecting');
    ['missions','jobs','updates'].forEach(n=>unsubs.push(listen(n)));
