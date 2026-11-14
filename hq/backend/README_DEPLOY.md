@@ -11,8 +11,25 @@
 
 ## Required owner actions (one-time)
 
+**Critical prerequisite — create your owner allowlist entry BEFORE deploying Firestore rules.** The bundled `firestore.rules` denies access to all user data unless `hqOwners/{uid}` exists. In Firebase Console → Authentication → Users, copy the UID for the Google account already signing into your HQ PWA. In Firestore Database → Data, create a collection `hqOwners`, document ID exactly that UID, and field `syncEnabled` (boolean) `false`. Keep your existing `users/{uid}/...` data untouched. Do not deploy the bundled rules until you verify the UID and allowlist record. After deploying rules, confirm your phone still reads its projects before deploying any worker.
+
+**Cloud Shell path:** On a laptop, open Firebase Console for `adarsh-hq-private` and click the Cloud Shell terminal; the Firebase CLI comes preinstalled. Run:
+
+```bash
+cd ~
+git clone https://github.com/BabaAdarsh/BabaAdarsh.github.io.git
+cd BabaAdarsh.github.io/hq/backend
+npm --prefix functions install
+npm --prefix functions test
+firebase deploy --project adarsh-hq-private --only firestore:rules,functions:hq
+```
+
+The existing repository is public for the separate GitHub Pages personal website; **do not change its visibility impulsively**. A future private HQ source repository plus Firebase Hosting is preferable, but Firebase Hosting still serves publicly retrievable frontend assets; private data is protected by Authentication and security rules. Avoid putting secrets in Git history.
+
 1. In the Firebase project **adarsh-hq-private**, activate a billing plan that permits Cloud Functions if you accept potential charges. The PWA/Firebase Authentication and Firestore setup is already working. Deploy from your Google/Firebase project after reviewing the repo's `hq/backend` code. The GitHub repo is public, so NEVER commit admin credentials, service-account JSON, OAuth tokens, or your private HQ data.
 2. Create a **user-managed service account** (recommended) for the backend with only the runtime roles it actually needs. Assign it as the Cloud Functions runtime identity, without downloading any service-account key. On a simpler preconfigured Firebase deployment, the runtime service identity is shown by `connectionHealth`. Both methods rely on Workload Identity / Application Default Credentials.
+**Only grant Sheet Editor access to the actual runtime service-account email.** If the app returns no email, inspect the deployed Cloud Function's Runtime service account in Google Cloud Console or with `gcloud functions describe connectionHealth --gen2 --region=northamerica-northeast1 --project=adarsh-hq-private --format='value(serviceConfig.serviceAccountEmail)'`. Never share the Sheet with a guessed identity. Do not download or upload a JSON service-account key.
+
 3. Open the private existing **Adarsh HQ — Mission Database v0.2** Google Sheet, select **Share**, add that exact service-account email as **Editor** *only to this Sheet*, and turn off email notifications. This grants the worker read/write access to this file; it does not grant broad access to Drive. Confirm the correct email in the Firebase function configuration before sharing. Google Sheets API must be enabled in the same Google Cloud project.
 4. Deploy the tightened Firestore rules (they preserve owner-only access) and deploy the Functions using Firebase CLI from a trusted terminal. The backend source is at `hq/backend/functions`, rules at `hq/backend/firestore.rules`. The `backend/firebase.json` is a deployment example, not a complete replacement for your existing hosting configuration.
 5. Sign in to the Android HQ app. Use **Background sync setup** to see the service-account email and activate the bridge after sharing the sheet. Turn on **Reminder notifications** only if you want them. In Firebase Console, create a public **Web Push VAPID key** and put it into the PWA's `firebase-config.js` (public key only). Then use **Enable background push** to register the device. Never put the private VAPID key in the app.
