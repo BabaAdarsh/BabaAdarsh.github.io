@@ -1,13 +1,20 @@
 /* Optional Firebase live adapter for Adarsh HQ. It activates only after a
  * Firebase project is configured and you sign in. No second AI is started.
  * Pinned Firebase modular SDK. Do not call it before a backend is configured. */
-import {initializeApp} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
-import {getAuth,GoogleAuthProvider,onAuthStateChanged,signInWithPopup,signInWithRedirect,signOut} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
-import {getFirestore,collection,doc,onSnapshot,setDoc,runTransaction,writeBatch,getDocs,serverTimestamp} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
-import {getMessaging,isSupported,getToken,onMessage} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js';
+// Cloud libraries are loaded ONLY after configuration. Local mode does not call Firebase.
 const config=globalThis.HQ_FIREBASE_CONFIG||{};
 const valid=!!(config.apiKey&&config.projectId&&config.appId&&config.authDomain);
 if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
+ const [appMod,authMod,dbMod,msgMod]=await Promise.all([
+  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js'),
+  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js'),
+  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js'),
+  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js')
+ ]);
+ const {initializeApp}=appMod;
+ const {getAuth,GoogleAuthProvider,onAuthStateChanged,signInWithPopup,signInWithRedirect,signOut}=authMod;
+ const {getFirestore,collection,doc,onSnapshot,setDoc,runTransaction,writeBatch,serverTimestamp}=dbMod;
+ const {getMessaging,isSupported,getToken,onMessage}=msgMod;
  const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
  let user=null,ready=false,unsubs=[],got=0;
  const status=(s)=>globalThis.HQ_DEBUG?.setConnection?.(s);
