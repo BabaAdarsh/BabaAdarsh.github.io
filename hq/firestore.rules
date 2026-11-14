@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Each Firebase-authenticated user sees ONLY their own workspace.
+    // Adarsh HQ currently supports one owner; no shared-team access.
+    match /users/{uid}/missions/{missionId} {
+      allow get, list, create, update: if isOwner(uid);
+      allow delete: if false;
+    }
+    match /users/{uid}/jobs/{jobId} {
+      allow get, list, create, update: if isOwner(uid);
+      allow delete: if false;
+    }
+    match /users/{uid}/updates/{updateId} {
+      allow get, list, create, update: if isOwner(uid);
+      allow delete: if false;
+    }
+    match /users/{uid}/devices/{deviceId} {
+      allow get, list, create, update, delete: if isOwner(uid);
+    }
+
+    // No global read/write, even for signed-in users.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
