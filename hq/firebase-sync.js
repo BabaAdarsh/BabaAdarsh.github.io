@@ -189,13 +189,30 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
    return result.data;
  }catch(error){presentFunctionError(error)}}
 
- async function enablePush(){ensure();if(!config.vapidKey)throw Error('Add your public VAPID key in firebase-config.js first.');if(!('Notification' in window))throw Error('This browser cannot display push notifications.');
-   const p=await Notification.requestPermission();if(p!=='granted')throw Error('Notifications were not allowed.');if(!await isSupported())throw Error('Firebase Messaging is not supported in this browser.');
+ async function enablePush(){ensure();
+   if(!('Notification' in window)||!('serviceWorker' in navigator))throw Error('This browser cannot support HQ background notifications.');
+   if(!await isSupported())throw Error('Firebase Messaging is not supported in this browser.');
+   let vapidKey=String(config.vapidKey||localStorage.getItem('hq-public-vapid-key')||'').trim();
+   if(!vapidKey){
+     const entered=window.prompt('Copy the PUBLIC Web Push VAPID key from Firebase Console → Project settings → Cloud Messaging → Web Push certificates. This key is public, not a private server key.','');
+     if(!entered)return {cancelled:true};
+     vapidKey=entered.trim();
+     if(!/^[A-Za-z0-9_-]{35,256}$/.test(vapidKey))throw Error('Invalid public Web Push certificate key. Do not paste private keys or credentials.');
+     localStorage.setItem('hq-public-vapid-key',vapidKey);
+   }
+   const p=await Notification.requestPermission();if(p!=='granted')throw Error('Notifications were not allowed on this phone.');
    const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js',{scope:'./push/'});
-   const messaging=getMessaging(app);const token=await getToken(messaging,{vapidKey:config.vapidKey,serviceWorkerRegistration:reg});if(!token)throw Error('No push token was returned.');
-   let deviceId=localStorage.getItem('hq-device-id');if(!deviceId){deviceId='device-'+crypto.randomUUID();localStorage.setItem('hq-device-id',deviceId)}
-   await setDoc(doc(base('devices'),deviceId),{token,createdAt:new Date().toISOString(),platform:navigator.userAgent.slice(0,140)});
-   onMessage(messaging,payload=>{notify(payload?.notification?.title||'New HQ update received')});notify('This device is registered for push. Delivery still requires a configured sender.');
+   const messaging=getMessaging(app);const token=await getToken(messaging,{vapidKey,serviceWorkerRegistration:reg});
+   if(!token)throw Error('Firebase did not return an FCM registration token.');
+   let deviceId=localStorage.getItem('hq-device-id');
+   if(!deviceId){deviceId='device-'+crypto.randomUUID();localStorage.setItem('hq-device-id',deviceId)}
+   await setDoc(doc(base('devices'),deviceId),{
+     token,createdAt:new Date().toISOString(),platform:navigator.userAgent.slice(0,140),
+     notificationsEnabled:true,syncOrigin:'phone'
+   },{merge:true});
+   onMessage(messaging,payload=>{notify(payload?.notification?.title||'New HQ update received')});
+   notify('Phone registered privately for FCM. No push is sent until you explicitly activate and test the free sender.');
+   return {registered:true};
  }
  onAuthStateChanged(auth,current=>{
    unsubs.forEach(f=>f());unsubs=[];loaded.clear();ready=false;user=current;
