@@ -75,8 +75,53 @@ function importData(file){if(!file)return;if(file.size>10_000_000){notify('File 
 function openFile(){let input=$('#importFile');if(!input){input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.id='importFile';input.style.display='none';document.body.append(input);input.addEventListener('change',()=>{importData(input.files?.[0]);input.value=''})}input.click()}
 async function testNotifications(){if(!('Notification'in window)){notify('This browser does not support notifications.');return}try{const p=await Notification.requestPermission();if(p!=='granted'){notify('Notification permission not granted.');return}const reg=await navigator.serviceWorker?.ready;if(reg&&reg.showNotification){await reg.showNotification('Adarsh HQ — Test',{body:'Foreground test delivered. Closed-app reminders still require a push sender.',icon:'./icons/icon-192.png',tag:'hq-pwa-test',data:{url:'./'}})}else new Notification('Adarsh HQ — Test',{body:'This is a browser notification test.'});notify('A test notification was requested. Check your phone.')}catch(e){notify('Notification test failed: '+e.message)}}
 async function install(){if(deferredPrompt){deferredPrompt.prompt();const {outcome}=await deferredPrompt.userChoice;deferredPrompt=null;notify(outcome==='accepted'?'Installing HQ…':'Installation dismissed.');return}showModal(`${modalHeader('Install on your device')}<div class="callout">Open this HTTPS site in Chrome on your Android phone, then tap <strong>⋮ → Add to Home screen → Install</strong> (if offered). On a laptop, use Chrome's Install app menu. This is a real PWA shell and can work offline. Private Google sync and background push are separate integrations.</div><div class="modal-actions"><button class="btn primary" data-action="close">Got it</button></div>`)}
+
+function cloudAction(action){
+  const bridge=globalThis.HQ_BRIDGE;
+  if(!bridge){
+    notify(globalThis.HQ_BRIDGE_LOAD_ERROR?'Firebase failed to load: '+globalThis.HQ_BRIDGE_LOAD_ERROR:'Firebase is still loading or offline. Try again after connecting to the internet.');
+    return;
+  }
+  let promise;
+  try{
+    if(action==='cloudSignin'){
+      globalThis.HQ_AUTH_ERROR='';
+      notify('Opening Google sign-in…');
+      promise=bridge.signIn(); // synchronous from button click, important on mobile
+    }else if(action==='cloudSignout'){
+      if(!confirm('Sign out? A local copy of your previously loaded records may remain on this phone until you clear device data.'))return;
+      promise=bridge.signOut();
+    }else if(action==='cloudUpload'){
+      if(!bridge.isReady()){notify('Please sign in and wait for the private cloud to connect first.');return;}
+      promise=bridge.uploadLocal(state);
+    }else if(action==='cloudPush'){
+      if(!bridge.isReady()){notify('Please sign in and wait for private cloud sync first.');return;}
+      promise=bridge.enablePush();
+    }else return;
+  }catch(error){cloudActionError(action,error);return;}
+  Promise.resolve(promise).then(()=>{
+    if(action==='cloudSignin'){globalThis.HQ_AUTH_ERROR='';notify('Google sign-in succeeded. Checking your private cloud…');}
+    else if(action==='cloudSignout')notify('Signed out. Local device data was not deleted.');
+    if(page==='settings')render();
+  }).catch(error=>cloudActionError(action,error));
+}
+function cloudActionError(action,error){
+  const code=String(error?.code||'');
+  let message=String(error?.message||error||'Unknown error');
+  if(code==='auth/unauthorized-domain')message='This website domain is not authorized. Firebase Console → Authentication → Settings → Authorized domains → add babaadarsh.github.io.';
+  else if(code==='auth/operation-not-allowed')message='Enable Google under Firebase Console → Authentication → Sign-in method.';
+  else if(code==='auth/popup-blocked')message='Chrome blocked the sign-in popup. Open HQ directly in Chrome rather than inside another app, allow popups for this site, and retry.';
+  else if(code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request')message='Sign-in was cancelled. Tap Sign in when ready.';
+  else if(code==='auth/network-request-failed')message='Firebase could not be reached. Check your network connection.';
+  else if(code==='permission-denied')message='Firestore rejected the request. Check that private security rules were published.';
+  message=message.slice(0,350);
+  globalThis.HQ_AUTH_ERROR=message;
+  notify((action==='cloudSignin'?'Google sign-in failed: ':'HQ cloud action failed: ')+message);
+  if(page==='settings')render();
+}
+
 function handleClick(e){const node=e.target.closest('[data-nav],[data-action],[data-mode]');if(!node)return;const nav=node.dataset.nav,action=node.dataset.action,mode=node.dataset.mode,id=node.dataset.id;if(nav){setPage(nav);return}if(mode){state.mode=mode;save();render();return}if(!action)return;
-switch(action){case'newMission':editMission();break;case'mission':editMission(id);break;case'saveMission':persistMission(id);break;case'close':closeModal();break;case'work':{const m=state.missions.find(x=>x.id===id);if(m)handoff(composedPrompt(m));else notify('Save this mission first.');break}case'progressPrompt':progressPrompt();break;case'addProgress':addProgress();break;case'saveProgress':saveProgress();break;case'import':openFile();break;case'export':exportData();break;case'install':install();break;case'notifications':testNotifications();break;case'copyAndOpen':copyAndOpen();break;case'shareRequest':shareRequest();break;case'handoffJob':{const j=state.jobs.find(x=>x.jobId===id);if(j)handoff(jobPrompt(j));break}case'clear':if(confirm('Delete all HQ data on this device? Google HQ will not be affected. Consider exporting first.')){localStorage.setItem(BACKUP_KEY,JSON.stringify(state));state=DEFAULT();save();render();notify('Local HQ reset.')}break;case'saveSheetUrl':{const u=$('#hqSheetUrl')?.value.trim();if(u&&!/^https:\/\/docs\.google\.com\/spreadsheets\//.test(u)){notify('Please enter a Google Sheets link.');break}state.settings.sheetUrl=u;save();notify('Private link saved on this device.');break}case'openSheet':if(state.settings.sheetUrl)window.open(state.settings.sheetUrl,'_blank','noopener');else notify('Save your private Google Sheet link first.');break;default:break}}
+switch(action){case'cloudSignin':case'cloudSignout':case'cloudUpload':case'cloudPush':cloudAction(action);break;case'newMission':editMission();break;case'mission':editMission(id);break;case'saveMission':persistMission(id);break;case'close':closeModal();break;case'work':{const m=state.missions.find(x=>x.id===id);if(m)handoff(composedPrompt(m));else notify('Save this mission first.');break}case'progressPrompt':progressPrompt();break;case'addProgress':addProgress();break;case'saveProgress':saveProgress();break;case'import':openFile();break;case'export':exportData();break;case'install':install();break;case'notifications':testNotifications();break;case'copyAndOpen':copyAndOpen();break;case'shareRequest':shareRequest();break;case'handoffJob':{const j=state.jobs.find(x=>x.jobId===id);if(j)handoff(jobPrompt(j));break}case'clear':if(confirm('Delete all HQ data on this device? Google HQ will not be affected. Consider exporting first.')){localStorage.setItem(BACKUP_KEY,JSON.stringify(state));state=DEFAULT();save();render();notify('Local HQ reset.')}break;case'saveSheetUrl':{const u=$('#hqSheetUrl')?.value.trim();if(u&&!/^https:\/\/docs\.google\.com\/spreadsheets\//.test(u)){notify('Please enter a Google Sheets link.');break}state.settings.sheetUrl=u;save();notify('Private link saved on this device.');break}case'openSheet':if(state.settings.sheetUrl)window.open(state.settings.sheetUrl,'_blank','noopener');else notify('Save your private Google Sheet link first.');break;default:break}}
 function hook(){document.addEventListener('click',handleClick);document.addEventListener('click',e=>{if(e.target.id==='createJobAndHandoff')createJob(true);if(e.target.id==='createJobOnly')createJob(false);if(e.target.id==='installBtnTop')install();if(e.target.id==='refreshBtn'){state=load();render();notify(cloudStatus==='synced'?'Live cloud changes arrive automatically while connected.':'Refreshed local device records; cloud sync is not active.')}if(e.target.id==='overlay')closeModal()});document.addEventListener('change',e=>{if(e.target.id==='filterProjects'){filter=e.target.value;render()}});document.addEventListener('input',e=>{if(e.target.id==='searchProjects'){q=e.target.value;const focus=document.activeElement;const pos=focus.selectionStart;render();const f=$('#searchProjects');f?.focus();f?.setSelectionRange(pos,pos)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtnTop').title='Install app'});window.addEventListener('appinstalled',()=>notify('Adarsh HQ was installed.'));window.addEventListener('storage',e=>{if(e.key===KEY){state=load();render();notify('Changes loaded from another open HQ tab.')}});if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.info('Offline worker unavailable:',e));}
 hook();render();
 window.HQ_DEBUG={getState:()=>state,setPage,importData,save,notify,setConnection:s=>{cloudStatus=s;render();},receiveRemote:(name,list)=>{
