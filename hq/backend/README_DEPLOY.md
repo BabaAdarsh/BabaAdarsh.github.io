@@ -1,3 +1,5 @@
+**NO-ADDITIONAL-COST REQUIREMENT — SHELVED.** The user explicitly rejected paid infrastructure. This Cloud Functions backend requires Firebase Blaze (billing) and **must not be deployed or activated** without a fresh explicit change of preference. Maintain the current working Firebase Spark + Google HQ app; design the free Google Apps Script/ChatGPT automation route instead. Instructions below are retained for reference only, not approved setup steps.
+
 # Adarsh HQ v1.0 — private sync and notification deployment
 
 **State:** Code-built and locally unit-tested. **Not deployed.** Firebase authorization, resource deployment, device token registration and end-to-end tests remain necessary. This worker is *not* another AI: ChatGPT remains the only assistant.
