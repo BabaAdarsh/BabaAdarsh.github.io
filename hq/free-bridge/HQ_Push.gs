@@ -60,7 +60,7 @@ function hqPushProbe(){
   var devices=hqPushDevices_();
   var result={hasDevices:devices.length>0,registeredDevices:devices.length,
     dailyPushEnabled:hqPushEnabled_(),testAvailable:devices.length>0,
-    mailRemindersEnabled:hqPushProperties_().getProperty('HQ_EMAIL_REMINDERS')==='true'};
+    eveningPushEnabled:hqPushProperties_().getProperty('HQ_PUSH_EVENING')==='true'};
   console.log(JSON.stringify(result));return result;
 }
 /** Owner intentionally runs this function to test actual private phone delivery. */
@@ -89,8 +89,9 @@ function hqPushTick(){
     var props=hqPushProperties_(),now=new Date();
     var day=Utilities.formatDate(now,HQ_PUSH.ZONE,'yyyy-MM-dd');
     var hour=Number(Utilities.formatDate(now,HQ_PUSH.ZONE,'H'));
-    var slot=hour===HQ_PUSH.MORNING_HOUR?'morning':hour===HQ_PUSH.EVENING_HOUR?'evening':null;
-    if(!slot)return {skipped:'outside 9am/7pm Toronto windows'};
+    var eveningEnabled=props.getProperty('HQ_PUSH_EVENING')==='true';
+    var slot=hour===HQ_PUSH.MORNING_HOUR?'morning':eveningEnabled&&hour===HQ_PUSH.EVENING_HOUR?'evening':null;
+    if(!slot)return {skipped:'outside authorized HQ push window'};
     var key='HQ_PUSH_SENT_'+day+'_'+slot;
     if(props.getProperty(key))return {skipped:'already sent '+slot};
     var devices=hqPushDevices_();
