@@ -107,9 +107,29 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
      const response=await fetch(url.toString(),{headers:{Authorization:'Bearer '+sheetsToken},cache:'no-store'});
      if(!response.ok){
        if(response.status===401){sheetsToken='';tokenValidUntil=0}
-       const reason=response.status===403?'Check the Google account and enable Google Sheets API for your Firebase Google Cloud project.':
-         response.status===404?'The HQ Sheet was not found for this account.':'HTTP '+response.status;
-       throw Error('Could not read Google HQ: '+reason);
+       // Preserve Google's actual API failure reason; 403 alone is ambiguous.
+       // Do not log or persist the OAuth token or spreadsheet content.
+       const payload=await response.json().catch(()=>null);
+       const problem=payload?.error||{};
+       const reasons=[
+         ...(Array.isArray(problem.details)?problem.details.map(d=>d?.reason):[]),
+         ...(Array.isArray(problem.errors)?problem.errors.map(d=>d?.reason):[])
+       ].filter(Boolean);
+       const reasonCode=String(reasons[0]||problem.status||'UNKNOWN').slice(0,90);
+       const googleMessage=String(problem.message||'').replace(/[\\r\\n]+/g,' ').slice(0,230);
+       const disabled=/SERVICE_DISABLED|ACCESS_NOT_CONFIGURED|accessNotConfigured/i.test(reasonCode)
+          ||/not been used in project|is disabled/i.test(googleMessage);
+       const scopeMissing=/ACCESS_TOKEN_SCOPE_INSUFFICIENT|insufficientPermissions/i.test(reasonCode)
+          ||/insufficient authentication scopes/i.test(googleMessage);
+       let explanation;
+       if(disabled)explanation='Google Sheets API is disabled for the Firebase Cloud project. Open Google Cloud Console for your project and enable Google Sheets API.';
+       else if(scopeMissing)explanation='Google login did not grant the spreadsheets.readonly permission. Try the Google HQ sync consent again and check OAuth Data Access settings.';
+       else if(response.status===403)explanation='Google returned a permissions error. Confirm the signed-in Google account owns or can read this Sheet, and check the Google Cloud API.';
+       else if(response.status===404)explanation='The selected Google account could not find the private HQ Sheet.';
+       else if(response.status===401)explanation='Google authorization has expired; tap Sync Google HQ to sign in again.';
+       else explanation='The Google Sheets request failed.';
+       globalThis.HQ_SHEETS_LAST_ERROR={status:response.status,code:reasonCode,detail:googleMessage};
+       throw Error('Google Sheets HTTP '+response.status+' ('+reasonCode+'): '+explanation+(googleMessage?' Google says: '+googleMessage:''));
      }
      const result=await response.json();
      const [m,j,u]=result.valueRanges||[];
