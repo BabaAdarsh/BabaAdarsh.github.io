@@ -5,17 +5,19 @@
 const config=globalThis.HQ_FIREBASE_CONFIG||{};
 const valid=!!(config.apiKey&&config.projectId&&config.appId&&config.authDomain);
 if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
- const [appMod,authMod,dbMod,msgMod]=await Promise.all([
+ const [appMod,authMod,dbMod,msgMod,funcMod]=await Promise.all([
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js'),
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js'),
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js'),
-  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js')
+  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js'),
+  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js')
  ]);
  const {initializeApp}=appMod;
  const {getAuth,GoogleAuthProvider,onAuthStateChanged,signInWithPopup,signOut}=authMod;
  const {getFirestore,collection,doc,onSnapshot,setDoc,getDocs,runTransaction,writeBatch,serverTimestamp}=dbMod;
  const {getMessaging,isSupported,getToken,onMessage}=msgMod;
- const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
+ const {getFunctions,httpsCallable}=funcMod;
+ const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider(),hqFunctions=getFunctions(app,'northamerica-northeast1');
  let user=null,ready=false,unsubs=[],loaded=new Set();
  const status=(s)=>globalThis.HQ_DEBUG?.setConnection?.(s);
  const notify=(s)=>globalThis.HQ_DEBUG?.notify?.(s);
@@ -31,11 +33,11 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
     const snap=await tx.get(ref);const prev=snap.exists()?snap.data():null;
     if(prev&&expectedUpdatedAt!==prev.updatedAt)throw Error('CONFLICT: HQ was changed on another device. Refresh before editing.');
     if(!prev&&expectedUpdatedAt)throw Error('CONFLICT: This record no longer exists.');
-    tx.set(ref,{...m,updatedAt:new Date().toISOString(),syncedAt:serverTimestamp()},{merge:true});
+    tx.set(ref,{...m,updatedAt:new Date().toISOString(),syncOrigin:'phone',syncedAt:serverTimestamp()},{merge:true});
     return true;
   })}
- async function saveJob(j){ensure();await setDoc(doc(base('jobs'),j.jobId),{...j,updatedAt:new Date().toISOString(),syncedAt:serverTimestamp()})}
- async function saveUpdate(u){ensure();await setDoc(doc(base('updates'),u.updateId),{...u,syncedAt:serverTimestamp()})}
+ async function saveJob(j){ensure();const stamp=new Date().toISOString();await setDoc(doc(base('jobs'),j.jobId),{...j,lastUpdated:stamp,updatedAt:stamp,syncOrigin:'phone',syncedAt:serverTimestamp()})}
+ async function saveUpdate(u){ensure();await setDoc(doc(base('updates'),u.updateId),{...u,syncOrigin:'phone',syncedAt:serverTimestamp()})}
  async function uploadLocal(data){ensure();if(!confirm('Upload LOCAL HQ records to Firebase? Matching cloud records will be overwritten. Export a backup first. This cannot be automatically undone.'))return;
    const entries=[['missions',data.missions||[],x=>x.id],['jobs',data.jobs||[],x=>x.jobId],['updates',data.updates||[],x=>x.updateId]];
    let n=0;for(const [name,rows,idfn] of entries){for(let i=0;i<rows.length;i+=350){const batch=writeBatch(db);for(const r of rows.slice(i,i+350)){if(!idfn(r))continue;const { _firestoreId,_etag,...safe }=r;batch.set(doc(base(name),idfn(r)),{...safe,syncedAt:serverTimestamp()});n++}await batch.commit()}}
@@ -157,6 +159,37 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
  window.setInterval(refreshGoogleWhenOpen,4*60*1000);
  window.addEventListener('focus',refreshGoogleWhenOpen);
 
+
+ // Optional authenticated background worker. The normal PWA remains usable if
+ // Firebase Cloud Functions are not deployed; no second AI is involved.
+ const callable=(name)=>httpsCallable(hqFunctions,name);
+ function presentFunctionError(error){
+   const code=String(error?.code||'');
+   if(code.includes('not-found')||code.includes('unavailable'))
+     throw Error('HQ background worker is not deployed or not reachable. Firebase sync within the app still works; automated background updates and push require a one-time deployment.');
+   if(code.includes('permission-denied'))throw Error('Your Firebase account is not on the HQ owner allowlist.');
+   throw Error(String(error?.message||error||'Background connection failed').slice(0,360));
+ }
+ async function connectionHealth(){ensure();try{
+   const result=await callable('connectionHealth')({});
+   globalThis.HQ_DEBUG?.setBackendHealth?.(result.data);
+   return result.data;
+ }catch(error){presentFunctionError(error)}}
+ async function configureBackground(data){ensure();try{
+   const result=await callable('configureHQ')(data);
+   globalThis.HQ_DEBUG?.setBackendHealth?.({...result.data,syncEnabled:!!result.data?.syncEnabled});
+   return result.data;
+ }catch(error){presentFunctionError(error)}}
+ async function backgroundSyncNow(){ensure();try{
+   const result=await callable('syncNow')({});
+   notify('Background HQ worker checked the private Google Sheet.');
+   return result.data;
+ }catch(error){presentFunctionError(error)}}
+ async function backgroundTestPush(){ensure();try{
+   const result=await callable('testPush')({});
+   return result.data;
+ }catch(error){presentFunctionError(error)}}
+
  async function enablePush(){ensure();if(!config.vapidKey)throw Error('Add your public VAPID key in firebase-config.js first.');if(!('Notification' in window))throw Error('This browser cannot display push notifications.');
    const p=await Notification.requestPermission();if(p!=='granted')throw Error('Notifications were not allowed.');if(!await isSupported())throw Error('Firebase Messaging is not supported in this browser.');
    const reg=await navigator.serviceWorker.register('./firebase-messaging-sw.js',{scope:'./push/'});
@@ -171,7 +204,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
    status('connecting');
    ['missions','jobs','updates'].forEach(n=>unsubs.push(listen(n)));
  });
- globalThis.HQ_BRIDGE={signIn,signOut:()=>signOut(auth),saveMission,saveJob,saveUpdate,uploadLocal,enablePush,syncFromGoogleHQ,getUser:()=>user,isReady:()=>ready,isConfigured:()=>valid};
+ globalThis.HQ_BRIDGE={signIn,signOut:()=>signOut(auth),saveMission,saveJob,saveUpdate,uploadLocal,enablePush,syncFromGoogleHQ,connectionHealth,configureBackground,backgroundSyncNow,backgroundTestPush,getUser:()=>user,isReady:()=>ready,isConfigured:()=>valid};
  globalThis.HQ_BRIDGE_CONFIGURED=true;
  status('signed_out');
 }catch(error){
