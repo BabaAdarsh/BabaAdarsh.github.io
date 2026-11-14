@@ -4,7 +4,7 @@
 // Cloud libraries are loaded ONLY after configuration. Local mode does not call Firebase.
 const config=globalThis.HQ_FIREBASE_CONFIG||{};
 const valid=!!(config.apiKey&&config.projectId&&config.appId&&config.authDomain);
-if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
+if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
  const [appMod,authMod,dbMod,msgMod]=await Promise.all([
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js'),
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js'),
@@ -58,4 +58,10 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{
  globalThis.HQ_BRIDGE={signIn,signOut:()=>signOut(auth),saveMission,saveJob,saveUpdate,uploadLocal,enablePush,getUser:()=>user,isReady:()=>ready,isConfigured:()=>valid};
  globalThis.HQ_BRIDGE_CONFIGURED=true;
  status('signed_out');
+}catch(error){
+ globalThis.HQ_BRIDGE_CONFIGURED=false;
+ globalThis.HQ_BRIDGE_LOAD_ERROR=String(error?.message||error);
+ globalThis.HQ_DEBUG?.setConnection?.('error');
+ globalThis.HQ_DEBUG?.notify?.('Firebase libraries could not be loaded. Please open HQ in Chrome and check your internet connection.');
+}
 }
