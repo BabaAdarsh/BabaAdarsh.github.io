@@ -116,7 +116,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
          ...(Array.isArray(problem.errors)?problem.errors.map(d=>d?.reason):[])
        ].filter(Boolean);
        const reasonCode=String(reasons[0]||problem.status||'UNKNOWN').slice(0,90);
-       const googleMessage=String(problem.message||'').replace(/[\\r\\n]+/g,' ').slice(0,230);
+       const googleMessage=String(problem.message||'').replace(/\s+/g,' ').slice(0,230);
        const disabled=/SERVICE_DISABLED|ACCESS_NOT_CONFIGURED|accessNotConfigured/i.test(reasonCode)
           ||/not been used in project|is disabled/i.test(googleMessage);
        const scopeMissing=/ACCESS_TOKEN_SCOPE_INSUFFICIENT|insufficientPermissions/i.test(reasonCode)
