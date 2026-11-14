@@ -1,0 +1,1 @@
+The public static PWA shell can be deployed under /hq/ on an existing GitHub Pages repository. This deploys no personal tasks. The public shell's backend is not configured and starts in local mode. A secure Firebase backend and private authorization are required for cross-device sync and push notifications. Never commit a private HQ snapshot to GitHub.
