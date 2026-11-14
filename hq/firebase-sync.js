@@ -5,19 +5,18 @@
 const config=globalThis.HQ_FIREBASE_CONFIG||{};
 const valid=!!(config.apiKey&&config.projectId&&config.appId&&config.authDomain);
 if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
- const [appMod,authMod,dbMod,msgMod,funcMod]=await Promise.all([
+ const [appMod,authMod,dbMod,msgMod]=await Promise.all([
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js'),
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js'),
   import('https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js'),
-  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js'),
-  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js')
+  import('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js')
  ]);
  const {initializeApp}=appMod;
  const {getAuth,GoogleAuthProvider,onAuthStateChanged,signInWithPopup,signOut}=authMod;
  const {getFirestore,collection,doc,onSnapshot,setDoc,getDocs,runTransaction,writeBatch,serverTimestamp}=dbMod;
  const {getMessaging,isSupported,getToken,onMessage}=msgMod;
- const {getFunctions,httpsCallable}=funcMod;
- const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider(),hqFunctions=getFunctions(app,'northamerica-northeast1');
+ let funcMod=null;async function backendSdk(){if(!funcMod)funcMod=await import('https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js');return funcMod;}
+ const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
  let user=null,ready=false,unsubs=[],loaded=new Set();
  const status=(s)=>globalThis.HQ_DEBUG?.setConnection?.(s);
  const notify=(s)=>globalThis.HQ_DEBUG?.notify?.(s);
@@ -162,7 +161,7 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
 
  // Optional authenticated background worker. The normal PWA remains usable if
  // Firebase Cloud Functions are not deployed; no second AI is involved.
- const callable=(name)=>httpsCallable(hqFunctions,name);
+ const callable=async(name)=>{const sdk=await backendSdk();return sdk.httpsCallable(sdk.getFunctions(app,'northamerica-northeast1'),name)};
  function presentFunctionError(error){
    const code=String(error?.code||'');
    if(code.includes('not-found')||code.includes('unavailable'))
@@ -171,22 +170,22 @@ if(!valid){globalThis.HQ_BRIDGE_CONFIGURED=false;}else{try{
    throw Error(String(error?.message||error||'Background connection failed').slice(0,360));
  }
  async function connectionHealth(){ensure();try{
-   const result=await callable('connectionHealth')({});
+   const result=await (await callable('connectionHealth'))({});
    globalThis.HQ_DEBUG?.setBackendHealth?.(result.data);
    return result.data;
  }catch(error){presentFunctionError(error)}}
  async function configureBackground(data){ensure();try{
-   const result=await callable('configureHQ')(data);
+   const result=await (await callable('configureHQ'))(data);
    globalThis.HQ_DEBUG?.setBackendHealth?.({...result.data,syncEnabled:!!result.data?.syncEnabled});
    return result.data;
  }catch(error){presentFunctionError(error)}}
  async function backgroundSyncNow(){ensure();try{
-   const result=await callable('syncNow')({});
+   const result=await (await callable('syncNow'))({});
    notify('Background HQ worker checked the private Google Sheet.');
    return result.data;
  }catch(error){presentFunctionError(error)}}
  async function backgroundTestPush(){ensure();try{
-   const result=await callable('testPush')({});
+   const result=await (await callable('testPush'))({});
    return result.data;
  }catch(error){presentFunctionError(error)}}
 
