@@ -1,5 +1,5 @@
 /* Offline-first static shell only. NO private user data is put into Cache Storage. */
-const VERSION='adarsh-hq-pwa-v11-google-error-readable-20261114';
+const VERSION='adarsh-hq-pwa-v12-clarify-sync-and-handoff-20261114';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(VERSION).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('adarsh-hq-pwa-')&&k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
