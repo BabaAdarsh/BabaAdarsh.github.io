@@ -5,7 +5,7 @@ const KEY='adarsh-hq-pwa-v06',BACKUP_KEY='adarsh-hq-pwa-v06-last-backup';
 const NAV=[['today','⌂','Today'],['projects','▦','Projects'],['ask','✦','Ask ChatGPT'],['progress','◷','Progress'],['settings','⚙','Settings']];
 const VALID_STATES=['review','ready','active','waiting','approval','blocked','done'];
 const DEFAULT=()=>({schema:'hq-pwa-local-v1',mode:'execute',missions:[],jobs:[],updates:[],settings:{sheetUrl:'',alerts:true,quietStart:'22:00',quietEnd:'08:00'},updatedAt:new Date().toISOString(),importedAt:null});
-let state=load(),page='today',filter='all',q='',deferredPrompt=null,toastTimer=null,handoffText='',cloudStatus='local',remoteFirst=true;
+let state=load(),page='today',filter='all',q='',deferredPrompt=null,toastTimer=null,handoffText='',cloudStatus='local',remoteFirst=true,backgroundHealth=null;
 const $=s=>document.querySelector(s), els=s=>[...document.querySelectorAll(s)];
 const iso=()=>new Date().toISOString();
 const localStamp=(time)=>{const date=new Date(time);return Number.isFinite(date.valueOf())?date.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):String(time||'unknown');};
