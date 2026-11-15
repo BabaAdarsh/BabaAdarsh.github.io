@@ -1,0 +1,29 @@
+name: HQ regression and data-safety checks
+on:
+  pull_request:
+    paths:
+      - 'hq/**'
+      - '.github/workflows/hq-regression.yml'
+  push:
+    paths:
+      - 'hq/**'
+      - '.github/workflows/hq-regression.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax checks
+        run: |
+          node --check hq/app.js
+          node --check hq/goal-loop.js
+          node --check hq/firebase-sync.js
+          node --check hq/sw.js
+      - name: Backward compatibility and goal-loop tests
+        run: node --test hq/tests/*.test.cjs
