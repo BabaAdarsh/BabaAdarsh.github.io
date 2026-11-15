@@ -1,0 +1,12 @@
+
+.hq-beta-banner{background:#152e51;color:#fff;text-align:center;padding:11px 14px;font-size:12px;font-family:system-ui,sans-serif;line-height:1.5;position:relative;z-index:1000}
+.hq-beta-banner strong{font-weight:800;letter-spacing:.08em;color:#bfcef8}
+.hq-beta-banner a{color:#fff;text-decoration:underline;margin-left:6px}
+.focus-resume{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #6179ec;border-radius:18px;padding:20px 24px;margin-bottom:18px;box-shadow:0 8px 24px rgba(15,23,42,.035)}
+.focus-resume h3{font-size:1.08rem;margin:4px 0 8px;line-height:1.35}
+.focus-resume p{font-size:.88rem;color:#64748b;margin:0 0 5px;line-height:1.5}
+.focus-resume small{display:block;color:#64748b;font-size:.74rem}
+.focus-eyebrow{font-size:.66rem;letter-spacing:.13em;font-weight:800;color:#4d67ce}
+.focus-buttons{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.focus-buttons .btn{white-space:nowrap}
+@media(max-width:640px){.focus-resume{padding:17px;align-items:stretch}.focus-buttons{display:grid;grid-template-columns:1fr 1fr}.focus-buttons .btn:first-child{grid-column:1/-1}.focus-buttons .btn{width:100%;font-size:.82rem}}
