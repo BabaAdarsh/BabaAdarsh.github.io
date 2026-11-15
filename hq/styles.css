@@ -8,3 +8,13 @@
 @media(max-width:450px){.topbar h1{font-size:20px}.stat strong{font-size:23px}.hero h2{font-size:21px}.hero p{font-size:12px}.status-pill{display:none}.project-card .project-symbol{width:37px;height:37px;font-size:19px}.project-card .right .chip{display:none}.toolbar .field{max-width:none}.toolbar .select{width:100%;max-width:none}.toolbar{display:grid;grid-template-columns:1fr 1fr}.toolbar .field{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 .focus-caution{font-size:11px!important;opacity:.88;border-left:2px solid #b8c4f8;padding-left:10px;margin-top:9px!important}
+
+/* Goal-loop v19. Additive; old cards, buttons, grids and offline layouts remain unchanged. */
+.focus-resume{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--card-bg,#fff);border:1px solid var(--line,#e2e8f0);border-left:4px solid #6179ec;border-radius:18px;padding:20px 24px;margin-bottom:18px;box-shadow:0 8px 24px rgba(15,23,42,.035)}
+.focus-resume h3{font-size:1.08rem;margin:4px 0 8px;line-height:1.35}
+.focus-resume p{font-size:.88rem;color:var(--muted,#64748b);margin:0 0 5px;line-height:1.5}
+.focus-resume small{display:block;color:var(--muted,#64748b);font-size:.74rem}
+.focus-eyebrow{font-size:.66rem;letter-spacing:.13em;font-weight:800;color:#4d67ce}
+.focus-buttons{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.focus-buttons .btn{white-space:nowrap}
+@media(max-width:640px){.focus-resume{padding:17px;align-items:stretch}.focus-buttons{display:grid;grid-template-columns:1fr 1fr}.focus-buttons .btn:first-child{grid-column:1/-1}.focus-buttons .btn{width:100%;font-size:.82rem}}
